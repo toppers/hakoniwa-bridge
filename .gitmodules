@@ -1,0 +1,9 @@
+[submodule "third-party/hakoniwa-core-cpp-client"]
+	path = third-party/hakoniwa-core-cpp-client
+	url = https://github.com/toppers/hakoniwa-core-cpp-client.git
+[submodule "third-party/hakoniwa-ros2pdu"]
+	path = third-party/hakoniwa-ros2pdu
+	url = https://github.com/toppers/hakoniwa-ros2pdu.git
+[submodule "third-party/zenoh-c"]
+	path = third-party/zenoh-c
+	url = https://github.com/eclipse-zenoh/zenoh-c.git
