@@ -1,4 +1,5 @@
 #include "shm_proxy_pdu.hpp"
+#include "hako_asset.h"
 #include <iostream>
 
 static void shm_proxy_pdu_data_handler(const z_sample_t *sample, void *arg) {
@@ -12,9 +13,8 @@ static void shm_proxy_pdu_data_handler(const z_sample_t *sample, void *arg) {
             std::cerr << "ERROR: topic data len too large: :" << sample->payload.len << std::endl;
         }
         else {
-            while (hakoniwa_shm_proxy_pdu->spin_lock.exchange(true, std::memory_order_acquire)) {}
+            std::lock_guard<std::mutex> lock(hakoniwa_shm_proxy_pdu->mutex);
             memcpy(reader.buffer.data.get(), sample->payload.start, sample->payload.len);
-            hakoniwa_shm_proxy_pdu->spin_lock.store(false, std::memory_order_release);
         }
     } else {
         std::cerr << "ERROR: not find topic on map" << std::endl;
@@ -53,11 +53,50 @@ bool shm_proxy_pdu_data_initialize(ShmProxyPduType& shm_proxy_pdu)
 }
 bool shm_proxy_pdu_writer_sync(ShmProxyPduType& shm_proxy_pdu)
 {
-    //TODO
+    for (const hako::asset::Robot& robot : shm_proxy_pdu.robots) {
+        for (const hako::asset::PduWriter& writer : robot.pdu_writers) {
+            auto it = hakoniwa_shm_proxy_pdu->pdu_writer_map.find(writer.name.c_str());
+            if (it != hakoniwa_shm_proxy_pdu->pdu_writer_map.end()) {
+                PduWriter& pdu_writer = it->second;
+                int ret = hako_asset_pdu_read(robot.name.c_str(), writer.channel_id, (char*)(pdu_writer.buffer.data.get()), writer.pdu_size);
+                if (ret != 0) {
+                    std::cerr << "ERROR: can not read pdu: robot = " << robot.name << " channel_id = " << writer.channel_id << " pdu_size = " << writer.pdu_size << std::endl;
+                    return false;
+                }
+                else {
+                    z_publisher_put_options_t options = z_publisher_put_options_default();
+                    z_publisher_put(z_loan(pdu_writer.pub), (const uint8_t *)pdu_writer.buffer.data.get(), writer.pdu_size, &options);
+                }
+            } else {
+                std::cerr << "ERROR: can not find pdu: robot = " << robot.name << " channel_id = " << writer.channel_id << " pdu_size = " << writer.pdu_size << std::endl;
+                return false;
+            }
+        }
+    }
     return true;
 }
+
 bool shm_proxy_pdu_reader_sync(ShmProxyPduType& shm_proxy_pdu)
 {
-    //TODO
+    for (const hako::asset::Robot& robot : shm_proxy_pdu.robots) {
+        for (const hako::asset::PduReader& reader : robot.pdu_readers) {
+            auto it = hakoniwa_shm_proxy_pdu->pdu_reader_map.find(reader.name.c_str());
+            if (it != hakoniwa_shm_proxy_pdu->pdu_reader_map.end()) {
+                PduReader& pdu_reader = it->second;
+                std::lock_guard<std::mutex> lock(hakoniwa_shm_proxy_pdu->mutex);
+                int ret = hako_asset_pdu_write(robot.name.c_str(), reader.channel_id, (const char*)(pdu_reader.buffer.data.get()), reader.pdu_size);
+                if (ret != 0) {
+                    std::cerr << "ERROR: can not write pdu: robot = " << robot.name << " channel_id = " << reader.channel_id << " pdu_size = " << reader.pdu_size << std::endl;
+                    return false;
+                }
+                else {
+                    //nothing to do
+                }
+            } else {
+                std::cerr << "ERROR: can not find pdu: robot = " << robot.name << " channel_id = " << reader.channel_id << " pdu_size = " << reader.pdu_size << std::endl;
+                return false;
+            }
+        }
+    }
     return true;
 }

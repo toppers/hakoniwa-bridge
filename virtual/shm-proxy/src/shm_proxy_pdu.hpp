@@ -3,7 +3,7 @@
 
 #include "hako_asset_pdu.hpp"
 #include "zenoh_comm.hpp"
-#include <atomic>
+#include <mutex>
 #include <unordered_map>
 #include <memory>
 
@@ -27,7 +27,7 @@ struct PduWriter {
 typedef struct ShmProxyPdu {
     std::vector<hako::asset::Robot> robots;
     ZenohSessionType session;
-    std::atomic_bool spin_lock{false};
+    std::mutex mutex;
     std::unordered_map<std::string, PduReader> pdu_reader_map;
     std::unordered_map<std::string, PduWriter> pdu_writer_map;
 } ShmProxyPduType;
