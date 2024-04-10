@@ -14,12 +14,12 @@ struct PduBuffer {
     PduBuffer(int ch, size_t len) : data(new char[len]), length(len), lchannel(ch) {}
 };
 struct PduReader {
-    z_owned_subscriber_t sub;
+    z_owned_publisher_t pub;
     PduBuffer buffer;
     PduReader(int ch, size_t len) : buffer(ch, len) {}
 };
 struct PduWriter {
-    z_owned_publisher_t pub;
+    z_owned_subscriber_t sub;
     PduBuffer buffer;
     PduWriter(int ch, size_t len) : buffer(ch, len) {}
 };
