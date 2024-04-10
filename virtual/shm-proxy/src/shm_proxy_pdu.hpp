@@ -13,13 +13,23 @@ struct PduBuffer {
     int lchannel;
     PduBuffer(int ch, size_t len) : data(new char[len]), length(len), lchannel(ch) {}
 };
+struct PduReader {
+    z_owned_subscriber_t sub;
+    PduBuffer buffer;
+    PduReader(int ch, size_t len) : buffer(ch, len) {}
+};
+struct PduWriter {
+    z_owned_publisher_t pub;
+    PduBuffer buffer;
+    PduWriter(int ch, size_t len) : buffer(ch, len) {}
+};
 
-typedef struct {
+typedef struct ShmProxyPdu {
     std::vector<hako::asset::Robot> robots;
     ZenohSessionType session;
     std::atomic_bool spin_lock{false};
-    std::unordered_map<std::string, PduBuffer> pdu_reader_map;
-    std::unordered_map<std::string, PduBuffer> pdu_writer_map;
+    std::unordered_map<std::string, PduReader> pdu_reader_map;
+    std::unordered_map<std::string, PduWriter> pdu_writer_map;
 } ShmProxyPduType;
 
 extern bool shm_proxy_pdu_data_initialize(ShmProxyPduType& shm_proxy_pdu);
