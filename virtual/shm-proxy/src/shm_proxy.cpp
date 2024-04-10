@@ -16,21 +16,16 @@ ShmProxyPduType *hakoniwa_shm_proxy_pdu= nullptr;
 
 static int my_on_initialize(hako_asset_context_t* context)
 {
-    //TODO
     return 0;
 }
 static int my_on_reset(hako_asset_context_t* context)
 {
-    //TODO
     return 0;
 }
 static int my_on_simulation_step(hako_asset_context_t* context)
 {
-    //TODO read pdu
-    //TODO publish pdu
-
-    //TODO subscribe pdu
-    //TODO write pdu
+    shm_proxy_pdu_reader_sync(*hakoniwa_shm_proxy_pdu);
+    shm_proxy_pdu_writer_sync(*hakoniwa_shm_proxy_pdu);
     return 0;
 }
 
@@ -66,7 +61,7 @@ int main(int argc, const char* argv[])
     }
     int ret = hako_asset_register(asset_name, config_path, &my_callback, delta_time_usec, HAKO_ASSET_MODEL_CONTROLLER);
     if (ret != 0) {
-        printf("ERORR: hako_asset_register() returns %d.", ret);
+        std::cerr << "ERORR: hako_asset_register() returns " << ret << std::endl;
         return 1;
     }
     hako::asset::hako_asset_get_pdus(shm_proxy_pdu.robots);

@@ -51,3 +51,13 @@ bool shm_proxy_pdu_data_initialize(ShmProxyPduType& shm_proxy_pdu)
     }
     return true;
 }
+bool shm_proxy_pdu_writer_sync(ShmProxyPduType& shm_proxy_pdu)
+{
+    //TODO
+    return true;
+}
+bool shm_proxy_pdu_reader_sync(ShmProxyPduType& shm_proxy_pdu)
+{
+    //TODO
+    return true;
+}
