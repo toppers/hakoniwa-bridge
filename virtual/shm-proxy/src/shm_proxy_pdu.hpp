@@ -33,5 +33,6 @@ typedef struct ShmProxyPdu {
 } ShmProxyPduType;
 
 extern bool shm_proxy_pdu_data_initialize(ShmProxyPduType& shm_proxy_pdu);
+extern ShmProxyPduType* hakoniwa_shm_proxy_pdu;
 
 #endif /* _SHM_PROXY_PDU_HPP_ */

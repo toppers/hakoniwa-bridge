@@ -12,6 +12,7 @@ static inline void usleep(long microseconds) {
 #include "shm_proxy_pdu.hpp"
 
 static ShmProxyPduType shm_proxy_pdu;
+ShmProxyPduType *hakoniwa_shm_proxy_pdu= nullptr;
 
 static int my_on_initialize(hako_asset_context_t* context)
 {
@@ -43,6 +44,7 @@ static hako_asset_callbacks_t my_callback = {
 
 int main(int argc, const char* argv[])
 {
+    hakoniwa_shm_proxy_pdu = &shm_proxy_pdu;
     if ((argc != 4) && (argc != 5)) {
         printf("Usage: %s <asset_name> <config_path> <delta_time_msec> [master]\n", argv[0]);
         return 1;

@@ -2,8 +2,23 @@
 #include <iostream>
 
 static void shm_proxy_pdu_data_handler(const z_sample_t *sample, void *arg) {
-    //TODO
     z_owned_str_t keystr = z_keyexpr_to_string(sample->keyexpr);
+    std::string topic_name(z_loan(keystr));
+    std::cout << "Receive: topic_name: " << topic_name << std::endl;
+    auto it = hakoniwa_shm_proxy_pdu->pdu_reader_map.find(topic_name);
+    if (it != hakoniwa_shm_proxy_pdu->pdu_reader_map.end()) {
+        PduReader& reader = it->second;
+        if (sample->payload.len > reader.buffer.length) {
+            std::cerr << "ERROR: topic data len too large: :" << sample->payload.len << std::endl;
+        }
+        else {
+            while (hakoniwa_shm_proxy_pdu->spin_lock.exchange(true, std::memory_order_acquire)) {}
+            memcpy(reader.buffer.data.get(), sample->payload.start, sample->payload.len);
+            hakoniwa_shm_proxy_pdu->spin_lock.store(false, std::memory_order_release);
+        }
+    } else {
+        std::cerr << "ERROR: not find topic on map" << std::endl;
+    }
     z_drop(z_move(keystr));
 }
 
