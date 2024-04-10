@@ -2,7 +2,11 @@ cmake_minimum_required(VERSION 3.10)
 
 project(shm-proxy-project)
 
-add_executable(shm-proxy src/shm-proxy.cpp)
+add_executable(
+    shm-proxy 
+    src/shm-proxy.cpp
+    src/zenoh-comm.cpp
+)
 
 target_include_directories(
     shm-proxy
@@ -12,6 +16,7 @@ target_include_directories(
 
 target_link_libraries(
     shm-proxy
+    ${ZENOH_C_LIBRARY}
     ${HAKO_C_LIBRARY}
     ${HAKO_CONDUCTOR_C_LIBRARY}
 )
