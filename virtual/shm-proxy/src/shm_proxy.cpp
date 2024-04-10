@@ -14,15 +14,15 @@ static inline void usleep(long microseconds) {
 static ShmProxyPduType shm_proxy_pdu;
 ShmProxyPduType *hakoniwa_shm_proxy_pdu= nullptr;
 
-static int my_on_initialize(hako_asset_context_t* context)
+static int my_on_initialize(hako_asset_context_t*)
 {
     return 0;
 }
-static int my_on_reset(hako_asset_context_t* context)
+static int my_on_reset(hako_asset_context_t*)
 {
     return 0;
 }
-static int my_on_simulation_step(hako_asset_context_t* context)
+static int my_on_simulation_step(hako_asset_context_t*)
 {
     shm_proxy_pdu_reader_sync(*hakoniwa_shm_proxy_pdu);
     shm_proxy_pdu_writer_sync(*hakoniwa_shm_proxy_pdu);
