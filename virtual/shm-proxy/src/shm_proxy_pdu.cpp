@@ -5,16 +5,16 @@
 static void shm_proxy_pdu_data_handler(const z_sample_t *sample, void *) {
     z_owned_str_t keystr = z_keyexpr_to_string(sample->keyexpr);
     std::string topic_name(z_loan(keystr));
-    std::cout << "Receive: topic_name: " << topic_name << std::endl;
-    auto it = hakoniwa_shm_proxy_pdu->pdu_reader_map.find(topic_name);
-    if (it != hakoniwa_shm_proxy_pdu->pdu_reader_map.end()) {
-        PduReader& reader = it->second;
-        if (sample->payload.len > reader.buffer.length) {
+    //std::cout << "Receive: topic_name: " << topic_name << std::endl;
+    auto it = hakoniwa_shm_proxy_pdu->pdu_writer_map.find(topic_name);
+    if (it != hakoniwa_shm_proxy_pdu->pdu_writer_map.end()) {
+        PduWriter& writer = it->second;
+        if (sample->payload.len > writer.buffer.length) {
             std::cerr << "ERROR: topic data len too large: :" << sample->payload.len << std::endl;
         }
         else {
             std::lock_guard<std::mutex> lock(hakoniwa_shm_proxy_pdu->mutex);
-            memcpy(reader.buffer.data.get(), sample->payload.start, sample->payload.len);
+            memcpy(writer.buffer.data.get(), sample->payload.start, sample->payload.len);
         }
     } else {
         std::cerr << "ERROR: not find topic on map" << std::endl;
