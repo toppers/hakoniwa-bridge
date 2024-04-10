@@ -1,4 +1,4 @@
-#include "zenoh-comm.hpp"
+#include "zenoh_comm.hpp"
 #include <iostream>
 
 bool zenoh_initialize(ZenohSessionType& session)

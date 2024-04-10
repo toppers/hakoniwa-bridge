@@ -8,7 +8,10 @@ static inline void usleep(long microseconds) {
 #else
 #include <unistd.h>
 #endif
-#include "zenoh-comm.hpp"
+#include "zenoh_comm.hpp"
+#include "shm_proxy_pdu.hpp"
+
+static ShmProxyPduType shm_proxy_pdu;
 
 static int my_on_initialize(hako_asset_context_t* context)
 {
@@ -44,7 +47,6 @@ int main(int argc, const char* argv[])
         printf("Usage: %s <asset_name> <config_path> <delta_time_msec> [master]\n", argv[0]);
         return 1;
     }
-    ZenohSessionType session;
     const char* asset_name = argv[1];
     const char* config_path = argv[2];
     bool enable_master = false;
@@ -53,10 +55,9 @@ int main(int argc, const char* argv[])
     {
         enable_master = true;
     }
-    if (zenoh_initialize(session) == false) {
+    if (zenoh_initialize(shm_proxy_pdu.session) == false) {
         return -1;
     }
-
 
     if (enable_master) {
         hako_conductor_start(delta_time_usec, delta_time_usec);
@@ -66,9 +67,13 @@ int main(int argc, const char* argv[])
         printf("ERORR: hako_asset_register() returns %d.", ret);
         return 1;
     }
+    hako::asset::hako_asset_get_pdus(shm_proxy_pdu.robots);
+    if (!shm_proxy_pdu_data_initialize(shm_proxy_pdu)) {
+        return -1;
+    }
     ret = hako_asset_start();
 
-    zenoh_finalize(session);
+    zenoh_finalize(shm_proxy_pdu.session);
 
     if (enable_master) {
         hako_conductor_stop();

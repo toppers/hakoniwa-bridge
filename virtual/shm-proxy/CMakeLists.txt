@@ -4,8 +4,9 @@ project(shm-proxy-project)
 
 add_executable(
     shm-proxy 
-    src/shm-proxy.cpp
-    src/zenoh-comm.cpp
+    src/shm_proxy.cpp
+    src/shm_proxy_pdu.cpp
+    src/zenoh_comm.cpp
 )
 
 target_include_directories(
