@@ -4,3 +4,6 @@
 [submodule "third-party/zenoh-c"]
 	path = third-party/zenoh-c
 	url = https://github.com/eclipse-zenoh/zenoh-c.git
+[submodule "third-party/hakoniwa-core-cpp-client"]
+	path = third-party/hakoniwa-core-cpp-client
+	url = https://github.com/toppers/hakoniwa-core-cpp-client.git
