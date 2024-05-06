@@ -13,7 +13,7 @@
           "conv_class_name": "Hakoniwa.PluggableAsset.Communication.Pdu.Raw.RawPduWriterConverter",
           "channel_id": 0,
           "pdu_size": 48,
-          "write_cycle": 50,
+          "write_cycle": 1,
           "method_type": "SHM"
         }
       ],
@@ -26,7 +26,7 @@
           "conv_class_name": "Hakoniwa.PluggableAsset.Communication.Pdu.Raw.RawPduWriterConverter",
           "channel_id": 1,
           "pdu_size": 4,
-          "write_cycle": 50,
+          "write_cycle": 1,
           "method_type": "SHM"
         },
         {
@@ -37,7 +37,7 @@
           "conv_class_name": "Hakoniwa.PluggableAsset.Communication.Pdu.Raw.RawPduWriterConverter",
           "channel_id": 2,
           "pdu_size": 4,
-          "write_cycle": 50,
+          "write_cycle": 1,
           "method_type": "SHM"
         }
       ]
