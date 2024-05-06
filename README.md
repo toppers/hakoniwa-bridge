@@ -1,66 +1,72 @@
+English ｜ [日本語](README-ja.md)
+
 # hakoniwa-bridge
 
-本リポジトリでは、リアル（エッジ）とバーチャル（箱庭）を接続するための通信モジュールである「箱庭ブリッジ」を提供します。
+This repository provides "Hakoniwa Bridge," a communication module that connects the real (edge) and virtual (Hakoniwa) environments.
 
-箱庭ブリッジは以下の機能を提供します。
+Hakoniwa Bridge offers the following features:
 
-* バーチャル側のデータをエッジ側に配信できます
-* エッジ側のデータをバーチャル側で購読できます
+- Deliver data from the virtual side to the edge side.
+- Subscribe to data from the edge side on the virtual side.
 
-## アーキテクチャ
+## Architecture
 
-箱庭ブリッジの通信は、[Zenoh](https://zenoh.io/) をベースに構築されています。
+Communication in Hakoniwa Bridge is based on [Zenoh](https://zenoh.io/).
 
-箱庭ブリッジの機能は大きく分けて、以下の２機能です。
+The functionalities of Hakoniwa Bridge are broadly divided into two:
 
-* ShmProxy
-* RosProxy
+- ShmProxy
+- RosProxy
 
-ShmProxy(SharedMemoryProxy)は、バーチャル側に配置されており、箱庭PDUデータをZenoh通信データに変換し、データ転送します。
+ShmProxy (SharedMemoryProxy) is located on the virtual side, converting Hakoniwa PDU data into Zenoh communication data for data transfer.
 
-RosProxyは、エッジ側に配置されており、ROS通信データをZenoh通信データに変換して双方を接続する役割を担います。なお、エッジ側でZenohを組み込んでいる場合は、箱庭PDUデータにそのままアクセスできます。
+RosProxy is located on the edge side, converting ROS communication data into Zenoh communication data to connect both sides. If Zenoh is integrated on the edge side, it can directly access Hakoniwa PDU data.
 
-![Hakoniwa Bridge Archtecture](images/archtecture.png)
+![Hakoniwa Bridge Architecture](images/architecture.png)
 
-Zenoh を採用している理由は以下の通りです。
+The reasons for adopting Zenoh are as follows:
 
-1. 通信方式として UDP/TCP/ROS/MQTTなど、さまざまなバリエーションを選択できる
-2. さまざまなプログラミング言語のサポート（C言語、Python、Rustなど）
-3. 異なるネットワークを超えるこができる（5Gルータ越しのROS通信も可能）
-4. 低遅延通信であり、リアルタイム性が求められる用途に適している
+1. Offers a variety of communication methods such as UDP, TCP, ROS, MQTT, etc.
+2. Supports multiple programming languages (C, Python, Rust, etc.)
+3. Capable of bridging different networks (including ROS communication via 5G routers)
+4. Provides low-latency communication suitable for real-time applications
 
-## 動作環境
+## Environment
 
-* バーチャル側
-  * Ubuntu, MacOS
-* エッジ側
-  * Ubuntu
-    * ROSまたはZenohを組み込み可能なデバイス（RaspberryPi等）
+- Virtual side:
+  - Ubuntu, MacOS
+- Edge side:
+  - Ubuntu
+  - Devices capable of integrating ROS or Zenoh (such as Raspberry Pi)
 
-## インストール手順
+## Sample Program
 
-箱庭ブリッジのリポジトリをクローンします。
+You can find the sample program [here](https://github.com/toppers/hakoniwa-bridge/tree/main/examples).
+
+## Installation Instructions
+
+Clone the Hakoniwa Bridge repository:
 
 ```
 git clone --recursive https://github.com/toppers/hakoniwa-bridge.git
 ```
 
-以下の順番でインストールを実施します。
+Follow these steps for installation:
 
-バーチャル側：
-- [箱庭コア機能のインストール](#箱庭コア機能のインストール)
-- [Zenohのインストール](#Zenohのインストール)
-- [ShmProxyの作成](#ShmProxyの作成)
+For the virtual side:
+- [Install Hakoniwa core functionalities](#installing-hakoniwa-core-functionalities)
+- [Install Zenoh](#installing-zenoh)
+- [Create ShmProxy](#creating-shmproxy)
 
-エッジ側側：
-- [Zenohのインストール](#Zenohのインストール)
-- [RosProxyの作成](#RosProxyの作成)
+For the edge side:
+- [Install Zenoh](#installing-zenoh)
+- [Create RosProxy](#creating-rosproxy)
 
-### 箱庭コア機能のインストール
+### Installing Hakoniwa Core Functionalities
 
-箱庭コア機能の[インストール手順](https://github.com/toppers/hakoniwa-core-cpp-client?tab=readme-ov-file#%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E6%89%8B%E9%A0%86)に従って、コア機能をインストールします。
+Follow the [installation instructions](https://github.com/toppers/hakoniwa-core-cpp-client?tab=readme-ov-file#installation-instructions) for the core functionalities.
 
-1. ディレクトリ移動
+1. Change directory
 
 ```
 cd third-party/hakoniwa-core-cpp-client
@@ -78,19 +84,20 @@ bash build.bash
 bash install.bash
 ```
 
-### Zenohのインストール
+### Installing Zenoh
 
-箱庭ブリッジが利用する Zenoh は、 [zenoh-c](https://github.com/eclipse-zenoh/zenoh-c) です。
+The Zenoh used by Hakoniwa Bridge is [zenoh-c](https://github.com/eclipse-zenoh/zenoh-c).
 
-`バーチャル側とエッジ側、両方にインストールする必要があります。`
+`It needs to be installed on both the virtual and edge sides.`
 
-1. ディレクトリ移動
+1. Change directory
 
 ```
 cd third-party 
 ```
 
 2. Build
+
 ```
 mkdir -p build && cd build 
 cmake ../zenoh-c
@@ -98,11 +105,12 @@ cmake --build . --config Release
 ```
 
 3. Install
+
 ```
 cmake --build . --target install
 ```
 
-成功すると、以下のファイルが作成されます。
+Upon success, the following files will be created:
 
 ```
 % ls /usr/local/include
@@ -114,7 +122,7 @@ zenoh.h                 zenoh_commons.h         zenoh_concrete.h        zenoh_co
 libzenohc.dylib
 ```
 
-#### ShmProxyの作成
+#### Creating ShmProxy
 
 ```
 cd hakoniwa-bridge/virtual
@@ -124,69 +132,69 @@ cd hakoniwa-bridge/virtual
 bash build.bash
 ```
 
-成功すると、以下のファイルが作成されます。
+Upon success, the following file will be created:
 
 ```
 % ls cmake-build/shm-proxy/shm-proxy 
 cmake-build/shm-proxy/shm-proxy
 ```
-#### RosProxyの作成
+#### Creating RosProxy
 
-RosProxyを作成するためには、最初に、箱庭PDUデータとして利用すROSメッセージ定義ファイルを準備する必要があります。ここでは、簡単のため、以下の標準ROSメッセージを利用する前提で説明をします。
+To create RosProxy, first, you need to prepare the ROS message definition files used as Hakoniwa PDU data. For simplicity, this explanation assumes the use of the following standard ROS messages:
 
-* geometry_msgs/Twist
-* std_msgs/Bool
+- geometry_msgs/Twist
+- std_msgs/Bool
 
-1. ディレクトリ移動
+1. Change directory
 
 ```
 cd hakoniwa-bridge/third-party/hakonwia-ros2pdu
 ```
 
-2. 箱庭PDUデータの作成
+2. Create Hakoniwa PDU data
 
-今回は、ROS標準のメッセージを利用するため、箱庭PDUデータは既存のものを利用できます。
-もし独自のROSメッセージを利用する場合は、[こちら](https://github.com/toppers/hakoniwa-ros2pdu/tree/4c658f62b8aac986f9d6571853407d892e01b5cc?tab=readme-ov-file#%E5%89%8D%E6%BA%96%E5%82%99)の手順にしたって、作成してください。
+For this instance, we are using standard ROS messages, so you can use the existing Hakoniwa PDU data. If you are using custom ROS messages, follow the [instructions here](https://github.com/toppers/hakoniwa-ros2pdu/tree/4c658f62b8aac986f9d6571853407d892e01b5cc?tab=readme-ov-file#preparation) to create them.
 
 
-3. コンフィグファイルの作成
+3. Create a config file
 
-本ファイルは、箱庭のUnityエディタ上で`Generate`すると自動生成されるものです。Unityを利用しない場合や、利用する場合でも全てのPDUデータをエッジ側と共有しない場合等は、手動で編集する必要があります。
+This file is automatically generated when you `Generate` in Hakoniwa's Unity editor. If you do not use Unity or if you do not share
 
-コンフィグファイルのファイル配置は以下としてください。
+ all the PDU data with the edge side even when using Unity, you need to edit the file manually.
+
+Place the config file as follows:
 
 hakoniwa-ros2pdu/config/custom.json
 
 
-定義例：
+Example definition:
 
 https://github.com/toppers/hakoniwa-digital-twin/blob/main/digital/config/custom.json
 
 
-custom.jsonの定義については、[こちら](https://github.com/toppers/hakoniwa-core-cpp-client?tab=readme-ov-file#%E7%AE%B1%E5%BA%AD%E3%82%A2%E3%82%BB%E3%83%83%E3%83%88%E3%82%B3%E3%83%B3%E3%83%95%E3%82%A3%E3%82%B0)を参照ください。
+For more details on custom.json's definition, see [here](https://github.com/toppers/hakoniwa-core-cpp-client?tab=readme-ov-file#hakoniwa-asset-config).
 
 
+Note, always specify SHM for method_type.
+Also, class_name and conv_class_name do not need to be set.
 
-なお、method_typeには、SHMを必ず指定してください。
-また、class_nameとconv_class_nameは設定不要です。
 
+3. Create RosProxy
 
-3. RosProxyの作成
-
-以下のコマンドを実行して RosProxyのコードを生成します。
+Run the following command to generate the code for RosProxy:
 
 ```
 bash create_proxy_ros_zenoh.bash ./config/custom.json 
 ```
 
-成功すると、以下のファイルが作成されます。
+Upon success, the following files will be created:
 
 ```
 # ls workspace/src/hako_ros_proxy/src/gen/
 hako_ros_proxy_com_ros2.cpp  hako_ros_proxy_com_zenoh.cpp
 ```
 
-4. RosProxyのビルド
+4. Build RosProxy
 
 ```
 cd workspace
@@ -196,7 +204,7 @@ cd workspace
 colcon build --packages-select hako_ros_proxy
 ```
 
-成功すると以下のログが出力されます。
+Upon success, the following log will appear:
 
 ```
 Starting >>> hako_ros_proxy
@@ -206,31 +214,31 @@ Finished <<< hako_ros_proxy [35.4s]
 Summary: 1 package finished [36.0s]
 ```
 
-## 実行手順
+## Execution Instructions
 
 ### ShmProxy
 
-ShmProxyの仕様：
+Usage of ShmProxy:
+
 ```
 Usage: ./cmake-build/shm-proxy/shm-proxy <asset_name> <config_path> <delta_time_msec> [master]
 ```
 
-ShmProxyは、箱庭コンダクタを含んでいます。もし、箱庭コンダクタを独自に起動しない場合は、`master`オプションを利用することで、箱庭コンダクタを駆動できます。
+ShmProxy includes the Hakoniwa Conductor. If you do not launch the Hakoniwa Conductor separately, you can use the `master` option to drive it.
 
-実行例：masterオプションを利用しない場合
+Example of execution without the master option:
 
 ```
  ./cmake-build/shm-proxy/shm-proxy ShmProxy ../third-party/hakoniwa-ros2pdu/config/custom.json 20
 ```
 
-実行例：masterオプションを利用する場合
+Example of execution with the master option:
 
 ```
  ./cmake-build/shm-proxy/shm-proxy ShmProxy ../third-party/hakoniwa-ros2pdu/config/custom.json 20 master
 ```
 
 ### RosProxy
-
 
 ```
 source install/setup.bash 

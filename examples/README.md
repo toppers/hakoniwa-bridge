@@ -1,39 +1,39 @@
-# これは何？
+English ｜ [日本語](README-ja.md)
 
-箱庭ブリッジの簡単なサンプルコードです。
+# What is this?
 
-このサンプルコードを利用すると以下を試すことができます。
+This is a simple sample code for the Hakoniwa Bridge.
 
-* バーチャル側の箱庭アセットからPDUデータを書き込みすると、エッジ側でそのデータを参照できる
-* エッジ側でPDUデータを配信すると、バーチャル側の箱庭アセットでそのデータを参照できる
+With this sample code, you can test the following:
 
-# 構成
+- Writing PDU data from a virtual Hakoniwa asset allows it to be referenced on the edge side.
+- Delivering PDU data from the edge side allows it to be referenced by the virtual Hakoniwa asset.
 
-サンプルプログラムの構成は下図のとおりです。
+# Configuration
+
+The configuration of the sample program is as shown in the diagram below.
 
 ![example](../images/example.png)
 
-バーチャル側の箱庭アセット HakoAssetSample は、箱庭PDUデータの読み書きを行います。
+The virtual side Hakoniwa asset, HakoAssetSample, performs read and write operations on the Hakoniwa PDU data.
 
-HakoAssetSample が読み込みするデータは、`RobotAvator_cmd_pos` です。
+The data read by HakoAssetSample is `RobotAvator_cmd_pos`.
 
-HakoAssetSample が書き込みするデータは、`RobotAvator_baggage_sensor` と `RobotAvator_bumper_sensor` です。
+The data written by HakoAssetSample are `RobotAvator_baggage_sensor` and `RobotAvator_bumper_sensor`.
 
-これらのデータは、ShmProxyを通して、エッジ側（Real）と共有されます。
+These data are shared with the edge side (Real) through ShmProxy.
 
-リアル側では、RosProxyを通して、ROSトピックとして配信/購読できます。
+On the real side, it can be published/subscribed as ROS topics through RosProxy.
 
-HakoAssetSample が書き込みしたデータ`RobotAvator_baggage_sensor` と `RobotAvator_bumper_sensor` は、ros2 topic echo で参照できます。
+The data written by HakoAssetSample, `RobotAvator_baggage_sensor` and `RobotAvator_bumper_sensor`, can be referenced using ros2 topic echo.
 
+The data read by HakoAssetSample, `RobotAvator_cmd_pos`, can be sent using the ros2 topic echo command.
 
-HakoAssetSample が読み込みするデータである `RobotAvator_cmd_pos` は、ros2 topic echo コマンドで送信できます。
+# Preparation
 
+Please install the necessary software on both the virtual and edge sides beforehand.
 
-# 準備
-
-事前に、バーチャル側とエッジ側のインストールを実施してください。
-
-バーチャル側のサンプルプログラムをビルドします。
+Build the sample program for the virtual side.
 
 ```
 cd examples
@@ -43,29 +43,30 @@ cd examples
 bash build.bash
 ```
 
-成功すると、以下のファイルが作成されます。
+Upon success, the following file will be created:
+
 ```
 % ls cmake-build/sample
 cmake-build/sample
 ```
 
-# 実行方法
+# How to Run
 
-## バーチャル側
+## On the Virtual Side
 
-ShmProxy を起動します。
+Start ShmProxy.
 
 ```
- ./cmake-build/shm-proxy/shm-proxy ShmProxy ../third-party/hakoniwa-ros2pdu/config/custom.json 20 master
+./cmake-build/shm-proxy/shm-proxy ShmProxy ../third-party/hakoniwa-ros2pdu/config/custom.json 20 master
 ```
 
-サンプルプログラムを起動します。
+Start the sample program.
 
 ```
 ./cmake-build/sample HakoSampleAsset ./custom.json 20
 ```
 
-成功すると、以下のように１秒毎にログ出力されます。
+Upon success, logs will be output every second as follows:
 
 ```
 Robot: RobotAvator, PduWriter: RobotAvator_baggage_sensor
@@ -95,21 +96,21 @@ INFO: on_simulation_step enter: 60000
 INFO: on_simulation_step exit
 ```
 
-箱庭コマンドでシミュレーション開始します。
+Start the simulation with the Hakoniwa command.
 
 ```
 hako-cmd start
 ```
 
-## エッジ側
+## On the Edge Side
 
-RosProxy を起動します。
+Start RosProxy.
 
 ```
 ros2 run hako_ros_proxy hako_ros_proxy_node 
 ```
 
-ROS2のトピック一覧を表示します。
+Display the list of ROS2 topics.
 
 ```
 ros2 topic list
@@ -120,14 +121,13 @@ ros2 topic list
 /rosout
 ```
 
-
-HakoAssetSample が書き込みしたデータ`RobotAvator_baggage_sensor` と `RobotAvator_bumper_sensor` を、ros2 topic echo で参照します。
+Reference the data written by HakoAssetSample, `RobotAvator_baggage_sensor` and `RobotAvator_bumper_sensor`, using ros2 topic echo.
 
 RobotAvator_baggage_sensor:
 ```
 ros2 topic echo /RobotAvator_baggage_sensor
 ```
-実行結果：true/falseトグルされた表示が続きます
+Output: Display continues toggling between true and false
 ```
 $ ros2 topic echo /RobotAvator_baggage_sensor
 data: true
@@ -144,7 +144,7 @@ RobotAvator_bumper_sensor:
 ros2 topic echo /RobotAvator_bumper_sensor:
 ```
 
-実行結果：true/falseトグルされた表示が続きます
+Output: Display continues toggling between true and false
 ```
 $ ros2 topic echo RobotAvator_bumper_sensor
 data: true
@@ -156,14 +156,15 @@ data: true
 data: false
 ```
 
-
-HakoAssetSample が読み込みするデータである `RobotAvator_cmd_pos` を、ros2 topic echo コマンドで以下のように送信します。
+Send the data read by HakoAssetSample, `RobotAvator_cmd_pos`, using the ros2 topic echo command as follows.
 
 ```
-ros2 topic pub RobotAvator_cmd_pos geometry_msgs/msg/Twist "{linear: {x: 3.5, y: 2.0, z: 1.0}, angular: {x: 0.1, y: 0.1, z: 0.2}}"
+ros2 topic pub RobotAvator_cmd_pos geometry_msgs/msg/Twist
+
+ "{linear: {x: 3.5, y: 2.0, z: 1.0}, angular: {x: 0.1, y: 0.1, z: 0.2}}"
 ```
 
-成功すると、バーチャル側で以下のように受信データが表示されます。
+Upon success, the virtual side will display the received data as follows:
 
 ```
 INFO: on_simulation_step enter: 2500000
