@@ -1,5 +1,4 @@
 #include "hako_asset.h"
-#include "hako_conductor.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "std_msgs/pdu_ctype_Bool.h"
@@ -11,6 +10,10 @@ static inline void usleep(long microseconds) {
 #else
 #include <unistd.h>
 #endif
+
+#define PDU_POS_CHANNEL_ID          0
+#define PDU_BAGGAGE_CHANNEL_ID      1
+#define PDU_BUMPER_CHANNEL_ID       2
 
 static int my_on_initialize(hako_asset_context_t* context)
 {
@@ -30,49 +33,51 @@ static int my_on_reset(hako_asset_context_t* context)
 }
 static int my_on_simulation_step(hako_asset_context_t* context)
 {
+    static int send_value = 0;
+    Hako_Twist pos;
+    Hako_Bool bumper;
+    Hako_Bool baggage;
     printf("INFO: on_simulation_step enter: %llu\n", hako_asset_simulation_time());
-    printf("INFO: sleep 1sec\n");
+    bumper.data = send_value;
+    int ret = hako_asset_pdu_write("RobotAvator", PDU_BUMPER_CHANNEL_ID, (const char*)(&bumper), sizeof(bumper));
+    if (ret != 0) {
+        printf("ERROR: hako_asset_pdu_write erro: %d\n", ret);
+    }
+    baggage.data = !send_value;
+    ret = hako_asset_pdu_write("RobotAvator", PDU_BAGGAGE_CHANNEL_ID, (const char*)(&baggage), sizeof(baggage));
+    if (ret != 0) {
+        printf("ERROR: hako_asset_pdu_write erro: %d\n", ret);
+    }
+    send_value = !send_value;
+
+    ret = hako_asset_pdu_read("RobotAvator", PDU_POS_CHANNEL_ID, (char*)(&pos), sizeof(pos));
+    if (ret != 0) {
+        printf("ERROR: hako_asset_pdu_read erro: %d\n", ret);
+    }
+    printf("%llu: pos data(%f, %f, %f)\n", hako_asset_simulation_time(), pos.linear.x, pos.linear.y, pos.linear.z);
+
     usleep(1000*1000);
     printf("INFO: on_simulation_step exit\n");
-    return 0;
-}
-static int my_on_manual_timing_control(hako_asset_context_t* context)
-{
-    printf("INFO: on_manual_timing_control enter\n");
-    int result = 0;
-    while (result == 0) {
-        printf("INFO: sleep 1sec: %llu\n", hako_asset_simulation_time());
-        result = hako_asset_usleep(1000);
-        usleep(1000*1000);
-    }
-    printf("INFO: on_manual_timing_control exit\n");
     return 0;
 }
 
 static hako_asset_callbacks_t my_callback = {
     .on_initialize = my_on_initialize,
     .on_manual_timing_control = NULL,
-    .on_simulation_step = NULL,
+    .on_simulation_step = my_on_simulation_step,
     .on_reset = my_on_reset
 };
 int main(int argc, const char* argv[])
 {
-    if ((argc != 4) && (argc != 5)) {
-        printf("Usage: %s <asset_name> <config_path> <delta_time_msec> [manual]\n", argv[0]);
+    if (argc != 4) {
+        printf("Usage: %s <asset_name> <config_path> <delta_time_msec>\n", argv[0]);
         return 1;
     }
     const char* asset_name = argv[1];
     const char* config_path = argv[2];
     hako_time_t delta_time_usec = atoi(argv[3]) * 1000;
-    if (argc == 4)
-    {
-        my_callback.on_simulation_step = my_on_simulation_step;
-    }
-    else {
-        my_callback.on_manual_timing_control = my_on_manual_timing_control;
-    }
-    hako_conductor_start(delta_time_usec, delta_time_usec);
-    int ret = hako_asset_register(asset_name, config_path, &my_callback, delta_time_usec, HAKO_ASSET_MODEL_CONTROLLER);
+
+    int ret = hako_asset_register(asset_name, config_path, &my_callback, delta_time_usec, HAKO_ASSET_MODEL_PLANT);
     if (ret != 0) {
         printf("ERORR: hako_asset_register() returns %d.", ret);
         return 1;
@@ -80,6 +85,5 @@ int main(int argc, const char* argv[])
     ret = hako_asset_start();
     printf("INFO: hako_asset_start() returns %d\n", ret);
 
-    hako_conductor_stop();
     return 0;
 }
