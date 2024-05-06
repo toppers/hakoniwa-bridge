@@ -33,6 +33,22 @@ HakoAssetSample が読み込みするデータである `RobotAvator_cmd_pos` �
 
 事前に、バーチャル側とエッジ側のインストールを実施してください。
 
+バーチャル側のサンプルプログラムをビルドします。
+
+```
+cd examples
+```
+
+```
+bash build.bash
+```
+
+成功すると、以下のファイルが作成されます。
+```
+% ls cmake-build/sample
+cmake-build/sample
+```
+
 # 実行方法
 
 
