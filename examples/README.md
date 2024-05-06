@@ -95,6 +95,12 @@ INFO: on_simulation_step enter: 60000
 INFO: on_simulation_step exit
 ```
 
+箱庭コマンドでシミュレーション開始します。
+
+```
+hako-cmd start
+```
+
 ## エッジ側
 
 RosProxy を起動します。
