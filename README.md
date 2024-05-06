@@ -22,7 +22,7 @@ ShmProxy (SharedMemoryProxy) is located on the virtual side, converting Hakoniwa
 
 RosProxy is located on the edge side, converting ROS communication data into Zenoh communication data to connect both sides. If Zenoh is integrated on the edge side, it can directly access Hakoniwa PDU data.
 
-![Hakoniwa Bridge Architecture](images/architecture.png)
+![Hakoniwa Bridge Archtecture](images/archtecture.png)
 
 The reasons for adopting Zenoh are as follows:
 
