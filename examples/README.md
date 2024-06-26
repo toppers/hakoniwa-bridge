@@ -31,6 +31,8 @@ The data read by HakoAssetSample, `RobotAvator_cmd_pos`, can be sent using the r
 
 # Preparation
 
+## On the Virtual side
+
 Please install the necessary software on both the virtual and edge sides beforehand.
 
 Build the sample program for the virtual side.
@@ -50,6 +52,33 @@ Upon success, the following file will be created:
 cmake-build/sample
 ```
 
+## On the Edge Side
+
+Please create `RosProxy` by using the following custom.json.
+
+https://github.com/toppers/hakoniwa-bridge/blob/main/examples/custom.json
+
+
+```
+cd hakoniwa-bridge/third-party/hakoniwa-ros2pdu
+```
+
+```
+wget https://raw.githubusercontent.com/toppers/hakoniwa-bridge/main/examples/custom.json
+```
+
+```
+bash create_proxy_ros_zenoh.bash custom.json
+```
+
+```
+cd workspace
+```
+
+```
+colcon build --packages-select hako_ros_proxy
+```
+
 # How to Run
 
 ## On the Virtual Side
@@ -57,7 +86,7 @@ cmake-build/sample
 Start ShmProxy.
 
 ```
-./cmake-build/shm-proxy/shm-proxy ShmProxy ../third-party/hakoniwa-ros2pdu/config/custom.json 20 master
+./cmake-build/shm-proxy/shm-proxy ShmProxy ../examples/custom.json 20 master
 ```
 
 Start the sample program.
@@ -70,12 +99,12 @@ Upon success, logs will be output every second as follows:
 
 ```
 Robot: RobotAvator, PduWriter: RobotAvator_baggage_sensor
-channel_id: 1 pdu_size: 4
-INFO: RobotAvator create_lchannel: logical_id=1 real_id=1 size=4
+channel_id: 1 pdu_size: 28
+INFO: RobotAvator create_lchannel: logical_id=1 real_id=1 size=28
 Robot: RobotAvator, PduWriter: RobotAvator_bumper_sensor
-channel_id: 2 pdu_size: 4
-INFO: RobotAvator create_lchannel: logical_id=2 real_id=2 size=4
-INFO: asset(HakoSampleAsset) is registered.
+channel_id: 2 pdu_size: 28
+INFO: RobotAvator create_lchannel: logical_id=2 real_id=2 size=28
+INFO: asset(Hello) is registered.
 WAIT START
 WAIT RUNNING
 PDU CREATED

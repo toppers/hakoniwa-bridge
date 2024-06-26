@@ -33,6 +33,8 @@ HakoAssetSample が読み込みするデータである `RobotAvator_cmd_pos` �
 
 # 準備
 
+## バーチャル側
+
 事前に、バーチャル側とエッジ側のインストールを実施してください。
 
 バーチャル側のサンプルプログラムをビルドします。
@@ -51,6 +53,33 @@ bash build.bash
 cmake-build/sample
 ```
 
+## エッジ側
+
+以下の custom.json を使って、`RosProxy` を作成します。
+
+https://github.com/toppers/hakoniwa-bridge/blob/main/examples/custom.json
+
+
+```
+cd hakoniwa-bridge/third-party/hakoniwa-ros2pdu
+```
+
+```
+wget https://raw.githubusercontent.com/toppers/hakoniwa-bridge/main/examples/custom.json
+```
+
+```
+bash create_proxy_ros_zenoh.bash custom.json
+```
+
+```
+cd workspace
+```
+
+```
+colcon build --packages-select hako_ros_proxy
+```
+
 # 実行方法
 
 ## バーチャル側
@@ -58,7 +87,7 @@ cmake-build/sample
 ShmProxy を起動します。
 
 ```
- ./cmake-build/shm-proxy/shm-proxy ShmProxy ../third-party/hakoniwa-ros2pdu/config/custom.json 20 master
+./cmake-build/shm-proxy/shm-proxy ShmProxy ../examples/custom.json 20 master
 ```
 
 サンプルプログラムを起動します。
@@ -71,12 +100,12 @@ ShmProxy を起動します。
 
 ```
 Robot: RobotAvator, PduWriter: RobotAvator_baggage_sensor
-channel_id: 1 pdu_size: 4
-INFO: RobotAvator create_lchannel: logical_id=1 real_id=1 size=4
+channel_id: 1 pdu_size: 28
+INFO: RobotAvator create_lchannel: logical_id=1 real_id=1 size=28
 Robot: RobotAvator, PduWriter: RobotAvator_bumper_sensor
-channel_id: 2 pdu_size: 4
-INFO: RobotAvator create_lchannel: logical_id=2 real_id=2 size=4
-INFO: asset(HakoSampleAsset) is registered.
+channel_id: 2 pdu_size: 28
+INFO: RobotAvator create_lchannel: logical_id=2 real_id=2 size=28
+INFO: asset(Hello) is registered.
 WAIT START
 WAIT RUNNING
 PDU CREATED
