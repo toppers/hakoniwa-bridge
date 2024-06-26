@@ -24,6 +24,7 @@ target_include_directories(
     PRIVATE include
     PRIVATE /usr/local/include
     PRIVATE ../third-party/hakoniwa-core-cpp-client/src/include
+    PRIVATE ../third-party/hakoniwa-ros2pdu/pdu/types
 )
 
 target_link_libraries(

@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include "std_msgs/pdu_ctype_Bool.h"
 #include "geometry_msgs/pdu_ctype_Twist.h"
+#include "pdu_primitive_ctypes.h"
+
 #ifdef _WIN32
 static inline void usleep(long microseconds) {
     Sleep(microseconds / 1000);
@@ -33,28 +35,39 @@ static int my_on_reset(hako_asset_context_t* context)
 }
 static int my_on_simulation_step(hako_asset_context_t* context)
 {
+    char pos_buffer[HAKO_PDU_FIXED_DATA_SIZE(sizeof(Hako_Twist))];
+    char bumper_buffer[HAKO_PDU_FIXED_DATA_SIZE(sizeof(Hako_Bool))];
+    char baggage_buffer[HAKO_PDU_FIXED_DATA_SIZE(sizeof(Hako_Bool))];
     static int send_value = 0;
-    Hako_Twist pos;
+    Hako_Twist *pos;
     Hako_Bool bumper;
     Hako_Bool baggage;
+
     printf("INFO: on_simulation_step enter: %llu\n", hako_asset_simulation_time());
     bumper.data = send_value;
-    int ret = hako_asset_pdu_write("RobotAvator", PDU_BUMPER_CHANNEL_ID, (const char*)(&bumper), sizeof(bumper));
+    if (hako_pdu_put_fixed_data(bumper_buffer, (const char*)&bumper, sizeof(bumper), sizeof(bumper_buffer)) != 0) {
+        printf("ERROR: hako_pdu_put_fixed_data error\n");
+    }
+    int ret = hako_asset_pdu_write("RobotAvator", PDU_BUMPER_CHANNEL_ID, (const char*)(&bumper_buffer), sizeof(bumper));
     if (ret != 0) {
         printf("ERROR: hako_asset_pdu_write erro: %d\n", ret);
     }
     baggage.data = !send_value;
-    ret = hako_asset_pdu_write("RobotAvator", PDU_BAGGAGE_CHANNEL_ID, (const char*)(&baggage), sizeof(baggage));
+    if (hako_pdu_put_fixed_data(bumper_buffer, (const char*)&baggage, sizeof(baggage), sizeof(baggage_buffer)) != 0) {
+        printf("ERROR: hako_pdu_put_fixed_data error\n");
+    }
+    ret = hako_asset_pdu_write("RobotAvator", PDU_BAGGAGE_CHANNEL_ID, (const char*)(&baggage_buffer), sizeof(baggage));
     if (ret != 0) {
         printf("ERROR: hako_asset_pdu_write erro: %d\n", ret);
     }
     send_value = !send_value;
 
-    ret = hako_asset_pdu_read("RobotAvator", PDU_POS_CHANNEL_ID, (char*)(&pos), sizeof(pos));
+    ret = hako_asset_pdu_read("RobotAvator", PDU_POS_CHANNEL_ID, (char*)(&pos_buffer), sizeof(pos));
     if (ret != 0) {
         printf("ERROR: hako_asset_pdu_read erro: %d\n", ret);
     }
-    printf("%llu: pos data(%f, %f, %f)\n", hako_asset_simulation_time(), pos.linear.x, pos.linear.y, pos.linear.z);
+    pos = (Hako_Twist*)hako_get_base_ptr_pdu(pos_buffer);
+    printf("%llu: pos data(%f, %f, %f)\n", hako_asset_simulation_time(), pos->linear.x, pos->linear.y, pos->linear.z);
 
     usleep(1000*1000);
     printf("INFO: on_simulation_step exit\n");
