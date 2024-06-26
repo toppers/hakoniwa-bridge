@@ -48,7 +48,7 @@ static int my_on_simulation_step(hako_asset_context_t* context)
     if (hako_pdu_put_fixed_data(bumper_buffer, (const char*)&bumper, sizeof(bumper), sizeof(bumper_buffer)) != 0) {
         printf("ERROR: hako_pdu_put_fixed_data error\n");
     }
-    int ret = hako_asset_pdu_write("RobotAvator", PDU_BUMPER_CHANNEL_ID, (const char*)(&bumper_buffer), sizeof(bumper));
+    int ret = hako_asset_pdu_write("RobotAvator", PDU_BUMPER_CHANNEL_ID, (const char*)(&bumper_buffer), sizeof(bumper_buffer));
     if (ret != 0) {
         printf("ERROR: hako_asset_pdu_write erro: %d\n", ret);
     }
@@ -56,18 +56,20 @@ static int my_on_simulation_step(hako_asset_context_t* context)
     if (hako_pdu_put_fixed_data(bumper_buffer, (const char*)&baggage, sizeof(baggage), sizeof(baggage_buffer)) != 0) {
         printf("ERROR: hako_pdu_put_fixed_data error\n");
     }
-    ret = hako_asset_pdu_write("RobotAvator", PDU_BAGGAGE_CHANNEL_ID, (const char*)(&baggage_buffer), sizeof(baggage));
+    ret = hako_asset_pdu_write("RobotAvator", PDU_BAGGAGE_CHANNEL_ID, (const char*)(&baggage_buffer), sizeof(baggage_buffer));
     if (ret != 0) {
         printf("ERROR: hako_asset_pdu_write erro: %d\n", ret);
     }
     send_value = !send_value;
 
-    ret = hako_asset_pdu_read("RobotAvator", PDU_POS_CHANNEL_ID, (char*)(&pos_buffer), sizeof(pos));
+    ret = hako_asset_pdu_read("RobotAvator", PDU_POS_CHANNEL_ID, (char*)(&pos_buffer), sizeof(pos_buffer));
     if (ret != 0) {
         printf("ERROR: hako_asset_pdu_read erro: %d\n", ret);
     }
     pos = (Hako_Twist*)hako_get_base_ptr_pdu(pos_buffer);
-    printf("%llu: pos data(%f, %f, %f)\n", hako_asset_simulation_time(), pos->linear.x, pos->linear.y, pos->linear.z);
+    if (pos != NULL) {
+        printf("%llu: pos data(%f, %f, %f)\n", hako_asset_simulation_time(), pos->linear.x, pos->linear.y, pos->linear.z);
+    }
 
     usleep(1000*1000);
     printf("INFO: on_simulation_step exit\n");
