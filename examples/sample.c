@@ -53,7 +53,7 @@ static int my_on_simulation_step(hako_asset_context_t* context)
         printf("ERROR: hako_asset_pdu_write erro: %d\n", ret);
     }
     baggage.data = !send_value;
-    if (hako_pdu_put_fixed_data(bumper_buffer, (const char*)&baggage, sizeof(baggage), sizeof(baggage_buffer)) != 0) {
+    if (hako_pdu_put_fixed_data(baggage_buffer, (const char*)&baggage, sizeof(baggage), sizeof(baggage_buffer)) != 0) {
         printf("ERROR: hako_pdu_put_fixed_data error\n");
     }
     ret = hako_asset_pdu_write("RobotAvator", PDU_BAGGAGE_CHANNEL_ID, (const char*)(&baggage_buffer), sizeof(baggage_buffer));
