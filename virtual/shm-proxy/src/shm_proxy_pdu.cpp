@@ -37,7 +37,7 @@ bool shm_proxy_pdu_data_initialize(ShmProxyPduType& shm_proxy_pdu)
             }
             PduWriter w(writer.channel_id, writer.pdu_size, writer.write_cycle);
 
-            z_owned_closure_sample_t callback = z_closure(shm_proxy_pdu_data_handler, NULL);
+            z_owned_closure_sample_t callback = z_closure(shm_proxy_pdu_data_handler);
             std::cout << "INFO: Zenoh subscriber: " << writer.name << std::endl;
             w.sub = z_declare_subscriber(z_loan(shm_proxy_pdu.session.s), z_keyexpr(writer.name.c_str()), z_move(callback), NULL);
             auto result = shm_proxy_pdu.pdu_writer_map.emplace(writer.name, std::move(w));
