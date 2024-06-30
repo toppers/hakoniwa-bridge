@@ -6,5 +6,12 @@ then
 fi
 
 cd cmake-build
-cmake ..
-make
+OS=$(uname)
+if [ "$OS" = "Linux" -o "$OS" = "Darwin"  ]
+then
+    cmake ..
+    make
+else
+    cmake -DCMAKE_BUILD_TYPE=Release ..
+    cmake --build . --target ALL_BUILD --config Release
+fi
