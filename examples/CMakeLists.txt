@@ -49,6 +49,13 @@ if(WIN32)
         PRIVATE ../third-party/local/include/hakoniwa
         PRIVATE ../third-party/hakoniwa-ros2pdu/pdu/types
     )
+    # リンクするライブラリの設定
+    target_link_libraries(
+        sample
+        assets
+        hako
+        conductor
+    )
 else()
     target_include_directories(
         sample
@@ -57,15 +64,14 @@ else()
         PRIVATE ../third-party/hakoniwa-core-cpp-client/src/include
         PRIVATE ../third-party/hakoniwa-ros2pdu/pdu/types
     )
+    # リンクするライブラリの設定
+    target_link_libraries(
+        sample
+        assets
+        conductor
+    )
 endif()
 
-# リンクするライブラリの設定
-target_link_libraries(
-    sample
-    assets
-    hako
-    conductor
-)
 
 # POSIX環境でスレッドライブラリをリンク
 if(NOT WIN32)
