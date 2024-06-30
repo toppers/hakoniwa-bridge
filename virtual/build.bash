@@ -6,7 +6,7 @@ then
 fi
 
 cd cmake-build
-
+OS=$(uname)
 if [ "$OS" = "Linux" -o "$OS" = "Darwin"  ]
 then
     cmake ..
