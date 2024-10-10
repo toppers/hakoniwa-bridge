@@ -173,7 +173,7 @@ hakoniwa-ros2pdu/config/custom.json
 
 定義例：
 
-https://github.com/toppers/hakoniwa-digital-twin/blob/main/digital/config/custom.json
+https://github.com/toppers/hakoniwa-digital-twin/blob/main/sim/config/custom.json
 
 
 custom.jsonの定義については、[こちら](https://github.com/toppers/hakoniwa-core-cpp-client?tab=readme-ov-file#%E7%AE%B1%E5%BA%AD%E3%82%A2%E3%82%BB%E3%83%83%E3%83%88%E3%82%B3%E3%83%B3%E3%83%95%E3%82%A3%E3%82%B0)を参照ください。

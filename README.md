@@ -174,7 +174,7 @@ hakoniwa-ros2pdu/config/custom.json
 
 Example definition:
 
-https://github.com/toppers/hakoniwa-digital-twin/blob/main/digital/config/custom.json
+https://github.com/toppers/hakoniwa-digital-twin/blob/main/sim/config/custom.json
 
 
 For more details on custom.json's definition, see [here](https://github.com/toppers/hakoniwa-core-cpp-client?tab=readme-ov-file#hakoniwa-asset-config).
