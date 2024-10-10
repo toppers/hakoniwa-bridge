@@ -126,6 +126,7 @@ libzenohc.dylib
 ```
 
 `libzenohc.so` will be created in the Linux envrionment.
+Add the above path if it is not in `${LD_LIBRARY_PATH}`.
 
 #### Creating ShmProxy
 

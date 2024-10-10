@@ -125,6 +125,7 @@ libzenohc.dylib
 ```
 
 Linuxの場合は `libzenohc.so` が生成されます。
+`${LD_LIBRARY_PATH}` になければ、上記のパスを追加しておきます。
 
 #### ShmProxyの作成
 
