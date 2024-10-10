@@ -1,6 +1,7 @@
 #include "shm_proxy_pdu.hpp"
 #include "hako_asset.h"
 #include <iostream>
+#include <cstring>
 
 //#define HAKO_ZENOH_DEBUG_RX
 //#define HAKO_ZENOH_DEBUG_TX
