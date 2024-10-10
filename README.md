@@ -87,8 +87,9 @@ bash install.bash
 ### Installing Zenoh
 
 The Zenoh used by Hakoniwa Bridge is [zenoh-c](https://github.com/eclipse-zenoh/zenoh-c).
+Note that [Rust environment](https://www.rust-lang.org/tools/install) is required to install Zenoh.
 
-`It needs to be installed on both the virtual and edge sides.`
+**It needs to be installed on both the virtual and edge sides.**
 
 1. Change directory
 

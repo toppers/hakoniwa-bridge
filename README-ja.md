@@ -87,8 +87,9 @@ bash install.bash
 ### Zenohのインストール
 
 箱庭ブリッジが利用する Zenoh は、 [zenoh-c](https://github.com/eclipse-zenoh/zenoh-c) です。
+なお Zenoh のインストールには[Rust環境](https://www.rust-lang.org/ja/tools/install)が必要です。
 
-`バーチャル側とエッジ側、両方にインストールする必要があります。`
+**バーチャル側とエッジ側、両方にインストールする必要があります。**
 
 1. ディレクトリ移動
 
