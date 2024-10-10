@@ -104,6 +104,9 @@ cmake --build . --config Release
 ```
 
 3. Install
+
+Linux環境の場合は `sudo` が必要になることがあります。
+
 ```
 cmake --build . --target install
 ```
@@ -119,6 +122,8 @@ zenoh.h                 zenoh_commons.h         zenoh_concrete.h        zenoh_co
 % ls /usr/local/lib
 libzenohc.dylib
 ```
+
+Linuxの場合は `libzenohc.so` が生成されます。
 
 #### ShmProxyの作成
 

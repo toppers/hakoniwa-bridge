@@ -106,6 +106,8 @@ cmake --build . --config Release
 
 3. Install
 
+You may need `sudo` when using Linux.
+
 ```
 cmake --build . --target install
 ```
@@ -121,6 +123,8 @@ zenoh.h                 zenoh_commons.h         zenoh_concrete.h        zenoh_co
 % ls /usr/local/lib
 libzenohc.dylib
 ```
+
+`libzenohc.so` will be created in the Linux envrionment.
 
 #### Creating ShmProxy
 
