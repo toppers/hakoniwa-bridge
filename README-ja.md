@@ -87,8 +87,9 @@ bash install.bash
 ### Zenohのインストール
 
 箱庭ブリッジが利用する Zenoh は、 [zenoh-c](https://github.com/eclipse-zenoh/zenoh-c) です。
+なお Zenoh のインストールには[Rust環境](https://www.rust-lang.org/ja/tools/install)が必要です。
 
-`バーチャル側とエッジ側、両方にインストールする必要があります。`
+**バーチャル側とエッジ側、両方にインストールする必要があります。**
 
 1. ディレクトリ移動
 
@@ -104,6 +105,9 @@ cmake --build . --config Release
 ```
 
 3. Install
+
+Linux環境の場合は `sudo` が必要になることがあります。
+
 ```
 cmake --build . --target install
 ```
@@ -119,6 +123,9 @@ zenoh.h                 zenoh_commons.h         zenoh_concrete.h        zenoh_co
 % ls /usr/local/lib
 libzenohc.dylib
 ```
+
+Linuxの場合は `libzenohc.so` が生成されます。
+`${LD_LIBRARY_PATH}` になければ、上記のパスを追加しておきます。
 
 #### ShmProxyの作成
 
@@ -166,7 +173,7 @@ hakoniwa-ros2pdu/config/custom.json
 
 定義例：
 
-https://github.com/toppers/hakoniwa-digital-twin/blob/main/digital/config/custom.json
+https://github.com/toppers/hakoniwa-digital-twin/blob/main/sim/config/custom.json
 
 
 custom.jsonの定義については、[こちら](https://github.com/toppers/hakoniwa-core-cpp-client?tab=readme-ov-file#%E7%AE%B1%E5%BA%AD%E3%82%A2%E3%82%BB%E3%83%83%E3%83%88%E3%82%B3%E3%83%B3%E3%83%95%E3%82%A3%E3%82%B0)を参照ください。
